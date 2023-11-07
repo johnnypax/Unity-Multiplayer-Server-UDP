@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Unity_Multiplayer_Server_UDP.Config;
 
 namespace Unity_Multiplayer_Server_UDP.Server
 {
@@ -24,9 +25,15 @@ namespace Unity_Multiplayer_Server_UDP.Server
         }
         private UDPServer()
         {
-            //TODO: Get ip address and port from appsettings.json
-            listener = new UdpClient(11000);
-            groupEP = new IPEndPoint(IPAddress.Any, 11000);
+            if (ConfigManager.getInstance().SetupComplete)
+            {
+                listener = new UdpClient(ConfigManager.getInstance().Port);
+                groupEP = new IPEndPoint(IPAddress.Any, ConfigManager.getInstance().Port);
+            }
+            else
+            {
+                Console.WriteLine("[ERROR] Error in configuration file");
+            }
         }
 
         public async Task StartServer()
